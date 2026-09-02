@@ -62,24 +62,27 @@
   .hero .facts div:first-child{ border-top:none; }
   .hero .facts b{ color:var(--ink); font-weight:600; }
 
+  /* Entrada del hero: por defecto visible; solo se anima si JS confirma que puede revelarla */
   .hero h1, .hero .role, .hero .facts{
-    opacity:0; transform:translateY(12px);
-    animation:rise .7s ease forwards;
+    transition:opacity .6s ease, transform .6s ease;
   }
-  .hero .role{ animation-delay:.15s; }
-  .hero .facts{ animation-delay:.3s; }
-  @keyframes rise{ to{ opacity:1; transform:none; } }
+  .hero.js-anim h1, .hero.js-anim .role, .hero.js-anim .facts{
+    opacity:0; transform:translateY(12px);
+  }
+  .hero.js-anim.in-view h1{ opacity:1; transform:none; }
+  .hero.js-anim.in-view .role{ opacity:1; transform:none; transition-delay:.15s; }
+  .hero.js-anim.in-view .facts{ opacity:1; transform:none; transition-delay:.3s; }
   @media (prefers-reduced-motion:reduce){
-    .hero h1,.hero .role,.hero .facts{ opacity:1; transform:none; animation:none; }
+    .hero.js-anim h1, .hero.js-anim .role, .hero.js-anim .facts{ opacity:1; transform:none; transition:none; }
   }
 
   /* --- editorial section: field label + content --- */
   section{
     display:flex; gap:48px; padding:56px 0; border-bottom:1px solid var(--line);
-    opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;
   }
-  section.in-view{ opacity:1; transform:none; }
-  @media (prefers-reduced-motion:reduce){ section{ opacity:1; transform:none; transition:none; } }
+  section:not(.hero){ opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease; }
+  section:not(.hero).in-view{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce){ section:not(.hero){ opacity:1; transform:none; transition:none; } }
 
   section .label{ flex:0 0 160px; }
   section .label h2{ font-size:20px; }
@@ -188,7 +191,7 @@
       </div>
       <div class="item">
         <strong>Unidad Educativa Réplica Vicente Rocafuerte</strong>
-        <div class="when">2019-2022</div>
+        <div class="when">2019 - 2022</div>
       </div>
     </div>
   </section>
@@ -298,11 +301,11 @@
     <div class="label"><h2>Por qué Netlife</h2></div>
     <div class="content">
       <p class="statement">
-        Me interesa realizar mi pasantía en Netlife porque trabaja con tecnologías de 
-        conectividad como FTTH y enlaces de datos,áreas que me interesan especialmente 
-        dentro de mi formación en Tecnologías de la Información. Cuento con 
-        conocimientos en soporte técnico, mantenimiento de equipos y redes que quiero 
-        poner en práctica en un entorno real, aprendiendo de profesionales con más 
+        Me interesa realizar mi pasantía en Netlife porque trabaja con tecnologías de
+        conectividad como FTTH y enlaces de datos, áreas que me interesan especialmente
+        dentro de mi formación en Tecnologías de la Información. Cuento con
+        conocimientos en soporte técnico, mantenimiento de equipos y redes que quiero
+        poner en práctica en un entorno real, aprendiendo de profesionales con más
         experiencia mientras aporto lo que ya sé al área de soporte.
       </p>
     </div>
@@ -331,6 +334,7 @@
 </footer>
 
 <script>
+  // Revelado de secciones normales (igual que antes)
   var sections = document.querySelectorAll('main section:not(.hero)');
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
@@ -338,6 +342,19 @@
     });
   }, { threshold: 0.12 });
   sections.forEach(function(s){ observer.observe(s); });
+
+  // Entrada del hero: se activa solo si JS corre correctamente,
+  // usando doble requestAnimationFrame para asegurar que el navegador
+  // ya pintó el estado inicial antes de animar (evita el bug de pantalla en blanco en móvil).
+  var hero = document.querySelector('.hero');
+  if (hero) {
+    hero.classList.add('js-anim');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        hero.classList.add('in-view');
+      });
+    });
+  }
 </script>
 
 </body>
