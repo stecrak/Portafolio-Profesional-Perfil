@@ -315,12 +315,12 @@
     <div class="label"><h2>Mi aporte</h2></div>
     <div class="content">
       <p class="statement">
-        Puedo aportar conocimientos en soporte técnico, mantenimiento de equipos y redes.
-        Tengo la capacidad de identificar y ayudar a solucionar problemas relacionados con
-        hardware, software y conectividad. Asimismo, cuento con conocimientos en tecnologías
-        de redes y seguridad, utilizando herramientas y equipos como Cisco y Fortinet. Me
-        caracterizo por tener disposición para aprender, adaptarme a nuevas tecnologías y
-        apoyar en las diferentes actividades del área de sistemas.
+        Puedo aportar una base sólida en resolución de incidencias técnicas y atención al usuario, desarrollada
+        tanto en mi formación como en mis prácticas profesionales previas. Mi experiencia trabajando 
+        con equipos Cisco y Fortinet me permite entender rápido dónde puede estar el origen de
+        un problema de conectividad, y mi paso por soporte técnico me enseñó a 
+        explicar soluciones de forma clara a personas sin conocimientos técnicos. 
+        Me adapto con facilidad a nuevas herramientas y estoy acostumbrado a aprender sobre la marcha en entornos de trabajo reales.
       </p>
     </div>
   </section>
@@ -334,7 +334,6 @@
 </footer>
 
 <script>
-  // Revelado de secciones normales (igual que antes)
   var sections = document.querySelectorAll('main section:not(.hero)');
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
@@ -343,9 +342,6 @@
   }, { threshold: 0.12 });
   sections.forEach(function(s){ observer.observe(s); });
 
-  // Entrada del hero: se activa solo si JS corre correctamente,
-  // usando doble requestAnimationFrame para asegurar que el navegador
-  // ya pintó el estado inicial antes de animar (evita el bug de pantalla en blanco en móvil).
   var hero = document.querySelector('.hero');
   if (hero) {
     hero.classList.add('js-anim');
