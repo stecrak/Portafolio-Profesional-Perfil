@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portafolio Profesional — Pasantía Soporte al Cliente Netlife</title>
+<title>Portafolio — Perfil profesional</title>
 <style>
   :root{
     --bg: #ffffff;
@@ -38,7 +38,7 @@
     padding:18px 56px;
   }
   header .mark{ font-weight:800; font-size:15px; letter-spacing:.02em; }
-  header nav ul{ list-style:none; display:flex; gap:28px; }
+  header nav ul{ list-style:none; display:flex; gap:22px; flex-wrap:wrap; }
   header nav a{ font-size:13px; color:var(--muted); position:relative; padding-bottom:4px; text-decoration:none; }
   header nav a::after{
     content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
@@ -88,6 +88,14 @@
   .item{ margin-bottom:18px; }
   .item .when{ color:var(--muted); font-size:13px; margin-top:2px; }
 
+  /* --- experiencia --- */
+  .job{ padding:20px 0; border-top:1px solid var(--line); }
+  .job:first-child{ border-top:none; }
+  .job h3{ font-size:16px; font-weight:700; }
+  .job .company{ font-size:14px; color:var(--ink); margin-top:2px; }
+  .job .meta{ font-size:12.5px; color:var(--muted); margin-top:4px; }
+  .job p{ font-size:14px; color:var(--muted); margin-top:12px; max-width:560px; }
+
   .skillgrid{ display:grid; grid-template-columns:1fr 1fr; gap:32px; }
   .skillgrid h3{ font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink); margin-bottom:10px; font-weight:700; border-bottom:1px solid var(--line); padding-bottom:6px; }
   .skillgrid ul{ list-style:none; color:var(--muted); font-size:14px; display:flex; flex-direction:column; gap:8px; }
@@ -113,8 +121,8 @@
   }
 
   @media (max-width:760px){
-    header{ padding:16px 24px; }
-    header nav ul{ gap:16px; flex-wrap:wrap; }
+    header{ padding:16px 24px; flex-direction:column; align-items:flex-start; gap:12px; }
+    header nav ul{ gap:14px; }
     main{ padding:0 24px; }
     .hero{ flex-direction:column; align-items:flex-start; padding:56px 0 40px; }
     .hero h1{ font-size:38px; }
@@ -129,14 +137,16 @@
 <body>
 
 <header>
-  <div class="mark">Portafolio — Perfil profesional </div>
+  <div class="mark">Portafolio — Perfil profesional</div>
   <nav>
     <ul>
       <li><a href="#presentacion">Presentación</a></li>
       <li><a href="#formacion">Formación</a></li>
+      <li><a href="#experiencia">Experiencia</a></li>
       <li><a href="#habilidades">Habilidades</a></li>
       <li><a href="#cursos">Cursos</a></li>
       <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#netlife">Netlife</a></li>
       <li><a href="#aporte">Aporte</a></li>
     </ul>
   </nav>
@@ -151,8 +161,8 @@
     </div>
     <div class="facts">
       <div><b>Ubicación</b> — Guayaquil, Ecuador</div>
-      <div><b>Contacto</b> — 0978878130 </div>
-      <div><b>Perfil</b> — github.com/stecrak?tab=repositories</div>
+      <div><b>Contacto</b> — 0978878130</div>
+      <div><b>Perfil</b> — github.com/stecrak</div>
     </div>
   </section>
 
@@ -160,11 +170,11 @@
     <div class="label"><h2>Presentación</h2></div>
     <div class="content">
       <p class="statement">
-    Estudiante de Ingeniería en Tecnologías de la Información, con interés en redes, infraestructura
-    tecnológica, seguridad informática, virtualización y tecnologías de datacenter. Con conocimientos
-    en soporte de TI, administración de sistemas y fundamentos de redes. Orientado al aprendizaje
-    continuo, la resolución de problemas y el desarrollo de habilidades en entornos tecnológicos en
-    constante evolución.
+        Estudiante de Ingeniería en Tecnologías de la Información, con interés en redes, infraestructura
+        tecnológica, seguridad informática, virtualización y tecnologías de datacenter. Con conocimientos
+        en soporte de TI, administración de sistemas y fundamentos de redes. Orientado al aprendizaje
+        continuo, la resolución de problemas y el desarrollo de habilidades en entornos tecnológicos en
+        constante evolución.
       </p>
     </div>
   </section>
@@ -174,12 +184,36 @@
     <div class="content">
       <div class="item">
         <strong>Universidad de Guayaquil</strong>
-        <div class="when">Cursando la Carrera de Tecnología de la Información ·  2022 - Presente </div>
+        <div class="when">Cursando la Carrera de Tecnología de la Información · 2022 - Presente</div>
       </div>
       <div class="item">
-        <strong>[Institución secundaria u otra formación relevante]</strong>
-        <div class="when">[Fechas]</div>
+        <strong>Unidad Educativa Réplica Vicente Rocafuerte</strong>
+        <div class="when">2019-2022</div>
       </div>
+    </div>
+  </section>
+
+  <section id="experiencia">
+    <div class="label"><h2>Experiencia</h2></div>
+    <div class="content">
+
+      <div class="job">
+        <h3>Soporte Técnico de Escritorio Senior</h3>
+        <div class="company">Sociedad de Beneficencia de Señoras de Guayaquil · Contrato de formación</div>
+        <div class="meta">jul. 2026 - ago. 2026 · 2 meses · Guayaquil, Guayas, Ecuador · Presencial</div>
+        <p>Realicé mantenimiento y actualización de la página web institucional, así como apoyo en el
+        mantenimiento y revisión de equipos de red y recursos tecnológicos del área de sistemas.</p>
+      </div>
+
+      <div class="job">
+        <h3>Auxiliar electricista</h3>
+        <div class="company">DIPRELAUT S.A. · Contrato de formación</div>
+        <div class="meta">abr. 2026 - jun. 2026 · 3 meses · Guayaquil, Guayas, Ecuador · Presencial</div>
+        <p>Realicé prácticas en DIPRELAUT S.A., brindando soporte técnico y trabajando con Node-RED e
+        InfluxDB para el monitoreo y gestión de datos provenientes de medidores eléctricos conectados
+        mediante redes móviles.</p>
+      </div>
+
     </div>
   </section>
 
@@ -260,17 +294,30 @@
     </div>
   </section>
 
+  <section id="netlife">
+    <div class="label"><h2>Por qué Netlife</h2></div>
+    <div class="content">
+      <p class="statement">
+        Me interesa realizar mi pasantía en Netlife porque trabaja con tecnologías de 
+        conectividad como FTTH y enlaces de datos,áreas que me interesan especialmente 
+        dentro de mi formación en Tecnologías de la Información. Cuento con 
+        conocimientos en soporte técnico, mantenimiento de equipos y redes que quiero 
+        poner en práctica en un entorno real, aprendiendo de profesionales con más 
+        experiencia mientras aporto lo que ya sé al área de soporte.
+      </p>
+    </div>
+  </section>
+
   <section id="aporte">
     <div class="label"><h2>Mi aporte</h2></div>
     <div class="content">
       <p class="statement">
-        Puedo aportar conocimientos en soporte técnico, mantenimiento de equipos y redes. 
-        Tengo la capacidad de identificar y ayudar a solucionar problemas 
-        relacionados con hardware, software y conectividad. Además, cuento
-        con conocimientos en tecnologías de redes y seguridad, utilizando 
-        herramientas y equipos como Cisco y Fortinet. Me caracterizo 
-        por tener disposición para aprender, adaptarme a nuevas tecnologías 
-        y apoyar en las diferentes actividades del área de sistemas.
+        Puedo aportar conocimientos en soporte técnico, mantenimiento de equipos y redes.
+        Tengo la capacidad de identificar y ayudar a solucionar problemas relacionados con
+        hardware, software y conectividad. Además, cuento con conocimientos en tecnologías
+        de redes y seguridad, utilizando herramientas y equipos como Cisco y Fortinet. Me
+        caracterizo por tener disposición para aprender, adaptarme a nuevas tecnologías y
+        apoyar en las diferentes actividades del área de sistemas.
       </p>
     </div>
   </section>
@@ -278,7 +325,9 @@
 </main>
 
 <footer>
-  Garcia Kevin · kevingarciaponce6@gmail.com · +593 97 887 8130 · <a href="#">github.com/stecrak?tab=repositories</a> · <a href="#">www.linkedin.com/in/kevin-garcia-ponce-87647a326</a>
+  Garcia Ponce Kevin · kevingarciaponce6@gmail.com · +593 97 887 8130 ·
+  <a href="https://github.com/stecrak">github.com/stecrak</a> ·
+  <a href="https://www.linkedin.com/in/kevin-garcia-ponce-87647a326">linkedin.com/in/kevin-garcia-ponce-87647a326</a>
 </footer>
 
 <script>
