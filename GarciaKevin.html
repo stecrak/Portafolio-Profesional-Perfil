@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portafolio Profesional — Pasantía Soporte al Cliente Netlife</title>
+<style>
+  :root{
+    --bg: #ffffff;
+    --panel: #f5f5f5;
+    --ink: #111111;
+    --muted: #666666;
+    --line: #dcdcdc;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Segoe UI','Inter',Arial,sans-serif;
+    line-height:1.65;
+  }
+  h1,h2{
+    font-family:'Arial Narrow','Helvetica Neue Condensed','Segoe UI',sans-serif;
+    font-weight:800;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  a{ color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+  a:hover{ color:var(--muted); }
+
+  /* --- header --- */
+  header{
+    position:sticky; top:0; z-index:10;
+    background:rgba(255,255,255,.92); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 56px;
+  }
+  header .mark{ font-weight:800; font-size:15px; letter-spacing:.02em; }
+  header nav ul{ list-style:none; display:flex; gap:28px; }
+  header nav a{ font-size:13px; color:var(--muted); position:relative; padding-bottom:4px; text-decoration:none; }
+  header nav a::after{
+    content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+    background:var(--ink); transition:width .25s ease;
+  }
+  header nav a:hover{ color:var(--ink); }
+  header nav a:hover::after{ width:100%; }
+
+  main{ max-width:920px; margin:0 auto; padding:0 56px; }
+
+  /* --- hero --- */
+  .hero{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    padding:88px 0 64px; border-bottom:1px solid var(--line);
+    gap:40px;
+  }
+  .hero h1{ font-size:52px; line-height:1.05; max-width:560px; }
+  .hero .role{ color:var(--ink); font-size:16px; font-weight:600; margin-top:16px; }
+  .hero .facts{ min-width:200px; font-size:13px; color:var(--muted); }
+  .hero .facts div{ padding:6px 0; border-top:1px solid var(--line); }
+  .hero .facts div:first-child{ border-top:none; }
+  .hero .facts b{ color:var(--ink); font-weight:600; }
+
+  .hero h1, .hero .role, .hero .facts{
+    opacity:0; transform:translateY(12px);
+    animation:rise .7s ease forwards;
+  }
+  .hero .role{ animation-delay:.15s; }
+  .hero .facts{ animation-delay:.3s; }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+  @media (prefers-reduced-motion:reduce){
+    .hero h1,.hero .role,.hero .facts{ opacity:1; transform:none; animation:none; }
+  }
+
+  /* --- editorial section: field label + content --- */
+  section{
+    display:flex; gap:48px; padding:56px 0; border-bottom:1px solid var(--line);
+    opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;
+  }
+  section.in-view{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce){ section{ opacity:1; transform:none; transition:none; } }
+
+  section .label{ flex:0 0 160px; }
+  section .label h2{ font-size:20px; }
+  section .content{ flex:1; min-width:0; }
+
+  .item{ margin-bottom:18px; }
+  .item .when{ color:var(--muted); font-size:13px; margin-top:2px; }
+
+  .skillgrid{ display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+  .skillgrid h3{ font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink); margin-bottom:10px; font-weight:700; border-bottom:1px solid var(--line); padding-bottom:6px; }
+  .skillgrid ul{ list-style:none; color:var(--muted); font-size:14px; display:flex; flex-direction:column; gap:8px; }
+
+  /* --- proyectos: filas tipo dossier, sin tarjetas repetidas --- */
+  .project-row{
+    padding:20px 0; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; gap:24px;
+    transition:padding-left .25s ease;
+  }
+  .project-row:first-child{ border-top:none; }
+  .project-row:hover{ padding-left:8px; }
+  .project-row h3{ font-size:16px; font-weight:700; margin-bottom:6px; }
+  .project-row p{ color:var(--muted); font-size:14px; max-width:480px; }
+  .project-row .links{ flex:0 0 auto; font-size:13px; white-space:nowrap; display:flex; flex-direction:column; gap:4px; text-align:right; }
+
+  .statement{ color:var(--muted); font-size:16px; max-width:600px; }
+  .statement strong{ color:var(--ink); font-weight:700; }
+
+  footer{
+    text-align:center; padding:48px 0; color:var(--muted); font-size:13px;
+    border-top:1px solid var(--line); margin-top:24px;
+  }
+
+  @media (max-width:760px){
+    header{ padding:16px 24px; }
+    header nav ul{ gap:16px; flex-wrap:wrap; }
+    main{ padding:0 24px; }
+    .hero{ flex-direction:column; align-items:flex-start; padding:56px 0 40px; }
+    .hero h1{ font-size:38px; }
+    section{ flex-direction:column; gap:16px; padding:40px 0; }
+    section .label{ flex:none; }
+    .skillgrid{ grid-template-columns:1fr; }
+    .project-row{ flex-direction:column; }
+    .project-row .links{ text-align:left; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="mark">[TU NOMBRE].</div>
+  <nav>
+    <ul>
+      <li><a href="#presentacion">Presentación</a></li>
+      <li><a href="#formacion">Formación</a></li>
+      <li><a href="#habilidades">Habilidades</a></li>
+      <li><a href="#cursos">Cursos</a></li>
+      <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#aporte">Aporte</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+  <section id="presentacion" class="hero" style="border-bottom:1px solid var(--line);">
+    <div>
+      <h1>[Tu nombre completo]</h1>
+      <p class="role">Postulante — Pasantía de Soporte al Cliente, Netlife</p>
+    </div>
+    <div class="facts">
+      <div><b>Ubicación</b> — [Ciudad, país]</div>
+      <div><b>Disponibilidad</b> — [Ej. tiempo completo]</div>
+      <div><b>Contacto</b> — [correo@ejemplo.com]</div>
+    </div>
+  </section>
+
+  <section id="presentacion-texto">
+    <div class="label"><h2>Presentación</h2></div>
+    <div class="content">
+      <p class="statement">
+        [2–3 líneas de presentación personal: quién eres, qué estudias, y qué te mueve hacia el soporte
+        técnico y la atención al cliente. Ejemplo: "Estudiante de [carrera], con interés en infraestructura
+        de redes y atención al cliente, actualmente formándome en administración de sistemas y buenas
+        prácticas de soporte técnico."]
+      </p>
+    </div>
+  </section>
+
+  <section id="formacion">
+    <div class="label"><h2>Formación</h2></div>
+    <div class="content">
+      <div class="item">
+        <strong>[Nombre de la institución]</strong>
+        <div class="when">[Carrera / nivel] · [Fechas]</div>
+      </div>
+      <div class="item">
+        <strong>[Institución secundaria u otra formación relevante]</strong>
+        <div class="when">[Fechas]</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="habilidades">
+    <div class="label"><h2>Habilidades</h2></div>
+    <div class="content">
+      <div class="skillgrid">
+        <div>
+          <h3>Técnicas</h3>
+          <ul>
+            <li>Diagnóstico y resolución de incidencias de red (Cisco, Fortinet)</li>
+            <li>Fundamentos de infraestructura: Windows Server, Active Directory, VMware</li>
+            <li>Desarrollo web básico (HTML, PHP, Google Apps Script)</li>
+            <li>[Otra herramienta o sistema relevante]</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Blandas</h3>
+          <ul>
+            <li>Comunicación clara y empática con el usuario</li>
+            <li>Paciencia y manejo de situaciones bajo presión</li>
+            <li>Resolución de problemas</li>
+            <li>Trabajo en equipo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cursos">
+    <div class="label"><h2>Cursos</h2></div>
+    <div class="content">
+      <div class="item">
+        <strong>Soporte y Seguridad de Red</strong>
+        <div class="when">Cisco Networking Academy · Expedición: sept. 2026</div>
+      </div>
+      <div class="item">
+        <strong>Direccionamiento de red y solución de problemas básicos</strong>
+        <div class="when">Cisco Networking Academy</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="proyectos">
+    <div class="label"><h2>Proyectos</h2></div>
+    <div class="content">
+
+      <div class="project-row">
+        <div>
+          <h3>TIER-III — Comandos y gestión en equipos Cisco y Fortinet</h3>
+          <p>Documentación y práctica de comandos para diagnóstico y resolución de incidencias de
+          nivel III en equipos Cisco y Fortinet. Muestra troubleshooting técnico avanzado y comprensión
+          de infraestructura de red.</p>
+        </div>
+        <div class="links"><a href="https://github.com/stecrak/TIER-III">Repositorio →</a></div>
+      </div>
+
+      <div class="project-row">
+        <div>
+          <h3>Sistema de Gestión Documental</h3>
+          <p>Aplicación web para la gestión y control de documentos, desarrollada con XAMPP y Google
+          Apps Script. Almacenamiento y acceso eficiente a la información.</p>
+        </div>
+        <div class="links">
+          <a href="https://github.com/stecrak/Sistema-de-Gesti-n-Documental">Repositorio →</a>
+          <a href="https://github.com/stecrak/sistemagesto.github.io">Demo en vivo →</a>
+        </div>
+      </div>
+
+      <div class="project-row">
+        <div>
+          <h3>Otros proyectos</h3>
+          <p>Proyectos adicionales de desarrollo web (PHP, HTML) enfocados en distintas necesidades
+          funcionales, disponibles en mi perfil de GitHub.</p>
+        </div>
+        <div class="links"><a href="https://github.com/stecrak">Perfil de GitHub →</a></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="aporte">
+    <div class="label"><h2>Mi aporte</h2></div>
+    <div class="content">
+      <p class="statement">
+        [Redacta 4–6 líneas explicando tu aporte concreto: tu base técnica en redes (Cisco/Fortinet)
+        para entender problemas de conectividad, tu capacidad de aprendizaje autónomo, y tu enfoque en
+        la experiencia del cliente.]
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  [Tu nombre] · [correo] · [teléfono] · <a href="#">GitHub</a> · <a href="#">LinkedIn</a>
+</footer>
+
+<script>
+  var sections = document.querySelectorAll('main section:not(.hero)');
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting) entry.target.classList.add('in-view');
+    });
+  }, { threshold: 0.12 });
+  sections.forEach(function(s){ observer.observe(s); });
+</script>
+
+</body>
+</html>
