@@ -7,351 +7,545 @@
 <style>
   :root{
     --bg: #ffffff;
-    --panel: #f5f5f5;
-    --ink: #111111;
-    --muted: #666666;
-    --line: #dcdcdc;
+    --ink: #0a0a0a;
+    --muted: #52585c;
+    --faint: #9aa0a4;
+    --line: #dcdfe1;
+    --line-strong: #0a0a0a;
+    --accent: #176B87;
+    --accent-soft: #E8F3F6;
+    --mono: 'IBM Plex Mono','JetBrains Mono',ui-monospace,'SF Mono',Consolas,monospace;
+    --sans: 'Segoe UI',Arial,Helvetica,sans-serif;
+    --header-h: 68px;
+    --footer-h: 130px;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  html{ scroll-behavior:smooth; }
+  html, body{ height:100%; overflow:hidden; }
   body{
-    background:var(--bg);
+    background:
+      radial-gradient(circle, rgba(23,107,135,.14) 1.6px, transparent 1.6px) 0 0 / 34px 34px,
+      var(--bg);
     color:var(--ink);
-    font-family:'Segoe UI','Inter',Arial,sans-serif;
-    line-height:1.65;
+    font-family:var(--sans);
+    line-height:1.6;
+    font-size:17px;
   }
   h1,h2{
-    font-family:'Arial Narrow','Helvetica Neue Condensed','Segoe UI',sans-serif;
+    font-family:'Arial Narrow','Helvetica Neue Condensed',var(--sans);
     font-weight:800;
     letter-spacing:-0.01em;
     color:var(--ink);
   }
-  a{ color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
-  a:hover{ color:var(--muted); }
+  a{ color:var(--ink); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--faint); }
+  a:hover{ color:var(--accent); text-decoration-color:var(--accent); }
 
-  /* --- header --- */
+  .mono{ font-family:var(--mono); }
+
+  /* ============= corner crosshairs (fixed, decorative frame) ============= */
+  .crosshair{ position:fixed; width:18px; height:18px; z-index:25; pointer-events:none; }
+  .crosshair::before, .crosshair::after{ content:""; position:absolute; background:var(--ink); }
+  .crosshair::before{ width:100%; height:1.5px; top:50%; }
+  .crosshair::after{ width:1.5px; height:100%; left:50%; }
+  .cross-tl{ top:calc(var(--header-h) + 12px); left:12px; }
+  .cross-tr{ top:calc(var(--header-h) + 12px); right:12px; }
+  .cross-bl{ bottom:calc(var(--footer-h) + 12px); left:12px; }
+  .cross-br{ bottom:calc(var(--footer-h) + 12px); right:12px; }
+
+  /* ================= header ================= */
   header{
-    position:sticky; top:0; z-index:10;
-    background:rgba(255,255,255,.92); backdrop-filter:blur(6px);
-    border-bottom:1px solid var(--line);
+    position:fixed; top:0; left:0; right:0; z-index:20; height:var(--header-h);
+    background:rgba(255,255,255,.94); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line-strong);
     display:flex; align-items:center; justify-content:space-between;
-    padding:18px 56px;
+    padding:0 34px;
   }
-  header .mark{ font-weight:800; font-size:15px; letter-spacing:.02em; }
-  header nav ul{ list-style:none; display:flex; gap:22px; flex-wrap:wrap; }
-  header nav a{ font-size:13px; color:var(--muted); position:relative; padding-bottom:4px; text-decoration:none; }
-  header nav a::after{
-    content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
-    background:var(--ink); transition:width .25s ease;
-  }
-  header nav a:hover{ color:var(--ink); }
-  header nav a:hover::after{ width:100%; }
+  header .mark{ font-family:var(--mono); font-weight:600; font-size:16px; letter-spacing:.02em; }
+  header .mark span{ color:var(--faint); }
+  header .count{ font-family:var(--mono); font-size:16px; color:var(--muted); font-variant-numeric:tabular-nums; }
+  header .count span#current-num{ color:var(--accent); font-weight:700; }
 
-  main{ max-width:920px; margin:0 auto; padding:0 56px; }
-
-  /* --- hero --- */
-  .hero{
-    display:flex; justify-content:space-between; align-items:flex-end;
-    padding:88px 0 64px; border-bottom:1px solid var(--line);
-    gap:40px;
+  /* ================= slide deck ================= */
+  .deck{
+    position:relative;
+    height:100vh; width:100%;
   }
-  .hero h1{ font-size:52px; line-height:1.05; max-width:560px; }
-  .hero .role{ color:var(--ink); font-size:16px; font-weight:600; margin-top:16px; }
-  .hero .facts{ min-width:200px; font-size:13px; color:var(--muted); }
-  .hero .facts div{ padding:6px 0; border-top:1px solid var(--line); }
-  .hero .facts div:first-child{ border-top:none; }
-  .hero .facts b{ color:var(--ink); font-weight:600; }
-
-  /* Entrada del hero: por defecto visible; solo se anima si JS confirma que puede revelarla */
-  .hero h1, .hero .role, .hero .facts{
-    transition:opacity .6s ease, transform .6s ease;
+  .slide{
+    position:absolute; left:0; right:0;
+    top:var(--header-h); bottom:var(--footer-h);
+    display:flex;
+    opacity:0; pointer-events:none;
+    transform:translateY(16px);
+    transition:opacity .4s ease, transform .4s ease;
+    padding:0 64px;
+    overflow-y:auto;
   }
-  .hero.js-anim h1, .hero.js-anim .role, .hero.js-anim .facts{
-    opacity:0; transform:translateY(12px);
-  }
-  .hero.js-anim.in-view h1{ opacity:1; transform:none; }
-  .hero.js-anim.in-view .role{ opacity:1; transform:none; transition-delay:.15s; }
-  .hero.js-anim.in-view .facts{ opacity:1; transform:none; transition-delay:.3s; }
+  .slide.active{ opacity:1; pointer-events:auto; transform:none; }
   @media (prefers-reduced-motion:reduce){
-    .hero.js-anim h1, .hero.js-anim .role, .hero.js-anim .facts{ opacity:1; transform:none; transition:none; }
+    .slide{ transition:opacity .15s linear; transform:none; }
   }
 
-  /* --- editorial section: field label + content --- */
-  section{
-    display:flex; gap:48px; padding:56px 0; border-bottom:1px solid var(--line);
-  }
-  section:not(.hero){ opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease; }
-  section:not(.hero).in-view{ opacity:1; transform:none; }
-  @media (prefers-reduced-motion:reduce){ section:not(.hero){ opacity:1; transform:none; transition:none; } }
+  .slide-inner{ margin:auto; max-width:1040px; width:100%; padding:40px 0; }
 
-  section .label{ flex:0 0 160px; }
-  section .label h2{ font-size:20px; }
-  section .content{ flex:1; min-width:0; }
+  /* --- section index + heading pattern --- */
+  .field{ display:flex; gap:44px; flex-wrap:wrap; }
+  .field .label{ flex:0 0 220px; display:flex; align-items:center; gap:18px; }
+  .field .label h2{ font-size:32px; }
+  .field .content{ flex:1; min-width:280px; }
+
+  .idx-dot{
+    flex:0 0 46px; width:46px; height:46px; border-radius:50%;
+    border:1.6px solid var(--accent);
+    color:var(--accent);
+    font-family:var(--mono); font-weight:700; font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* --- hero slide --- */
+  .slide#slide-presentacion .slide-inner{ display:flex; flex-direction:column; gap:30px; }
+  .slide#slide-presentacion .idx-dot{
+    flex:0 0 56px; width:56px; height:56px; font-size:17px;
+    background:var(--accent-soft);
+  }
+  .hero-top{ display:flex; justify-content:space-between; align-items:flex-end; gap:44px; flex-wrap:wrap; }
+  .hero-top h1{ font-size:76px; line-height:1.02; max-width:640px; }
+  .hero-top .role{ font-family:var(--mono); font-size:16px; color:var(--accent); font-weight:600; margin-top:16px; letter-spacing:.02em; }
+  .facts{ min-width:250px; font-family:var(--mono); font-size:15px; color:var(--muted); }
+  .facts div{ padding:8px 0; border-top:1px solid var(--line); }
+  .facts div:first-child{ border-top:none; }
+  .facts b{ color:var(--ink); font-weight:600; }
+  .statement{ color:var(--muted); font-size:20px; max-width:700px; border-top:1px solid var(--line); padding-top:26px; }
+  .field .statement{ border-top:none; padding-top:0; }
+  .profile-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+  .profile-tags span{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.03em;
+    border:1px solid var(--line); padding:7px 10px; color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .project-tech{ font-family:var(--mono); font-size:11px; color:var(--accent); margin-top:12px; letter-spacing:.02em; }
 
   .item{ margin-bottom:18px; }
-  .item .when{ color:var(--muted); font-size:13px; margin-top:2px; }
+  .item .when{ font-family:var(--mono); color:var(--muted); font-size:14px; margin-top:4px; }
 
-  /* --- experiencia --- */
-  .job{ padding:20px 0; border-top:1px solid var(--line); }
+  .job{ padding:22px 0; border-top:1px solid var(--line); }
   .job:first-child{ border-top:none; }
-  .job h3{ font-size:16px; font-weight:700; }
-  .job .company{ font-size:14px; color:var(--ink); margin-top:2px; }
-  .job .meta{ font-size:12.5px; color:var(--muted); margin-top:4px; }
-  .job p{ font-size:14px; color:var(--muted); margin-top:12px; max-width:560px; }
+  .job h3{ font-size:20px; font-weight:700; }
+  .job .company{ font-size:16.5px; color:var(--ink); margin-top:3px; }
+  .job .meta{ font-family:var(--mono); font-size:13.5px; color:var(--muted); margin-top:6px; }
+  .job p{ font-size:16.5px; color:var(--muted); margin-top:12px; max-width:640px; }
 
-  .skillgrid{ display:grid; grid-template-columns:1fr 1fr; gap:32px; }
-  .skillgrid h3{ font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink); margin-bottom:10px; font-weight:700; border-bottom:1px solid var(--line); padding-bottom:6px; }
-  .skillgrid ul{ list-style:none; color:var(--muted); font-size:14px; display:flex; flex-direction:column; gap:8px; }
+  .skillgrid{ display:grid; grid-template-columns:1fr 1fr; gap:38px; }
+  .skillgrid h3{ font-family:var(--mono); font-size:13px; letter-spacing:.03em; color:var(--accent); margin-bottom:12px; font-weight:700; border-bottom:1px solid var(--line); padding-bottom:8px; }
+  .skillgrid ul{ list-style:none; color:var(--muted); font-size:16.5px; display:flex; flex-direction:column; gap:10px; }
+  .skillgrid li::before{ content:"— "; color:var(--accent); font-family:var(--mono); }
 
-  /* --- proyectos: filas tipo dossier, sin tarjetas repetidas --- */
   .project-row{
-    padding:20px 0; border-top:1px solid var(--line);
-    display:flex; justify-content:space-between; gap:24px;
-    transition:padding-left .25s ease;
+    padding:24px 0; border-top:1px solid var(--line);
+    display:grid; grid-template-columns:190px 1fr auto; align-items:center;
+    gap:28px;
   }
   .project-row:first-child{ border-top:none; }
-  .project-row:hover{ padding-left:8px; }
-  .project-row h3{ font-size:16px; font-weight:700; margin-bottom:6px; }
-  .project-row p{ color:var(--muted); font-size:14px; max-width:480px; }
-  .project-row .links{ flex:0 0 auto; font-size:13px; white-space:nowrap; display:flex; flex-direction:column; gap:4px; text-align:right; }
-
-  .statement{ color:var(--muted); font-size:16px; max-width:600px; }
-  .statement strong{ color:var(--ink); font-weight:700; }
-
-  footer{
-    text-align:center; padding:48px 0; color:var(--muted); font-size:13px;
-    border-top:1px solid var(--line); margin-top:24px;
+  .project-image{
+    width:190px; height:120px; border:1px solid var(--line);
+    background:var(--accent-soft); overflow:hidden; position:relative;
+    display:flex; align-items:center; justify-content:center;
   }
+  .project-image img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .project-image .image-placeholder{
+    font-family:var(--mono); font-size:11px; line-height:1.4;
+    color:var(--accent); text-align:center; padding:14px;
+  }
+  .project-row h3{ font-size:20px; font-weight:700; margin-bottom:8px; }
+  .project-row p{ color:var(--muted); font-size:16.5px; max-width:600px; }
+  .project-row .links{ flex:0 0 auto; font-family:var(--mono); font-size:14.5px; white-space:nowrap; display:flex; flex-direction:column; gap:6px; text-align:right; }
+
+  /* ================= fixed footer / status bar ================= */
+  footer.statusbar{
+    position:fixed; left:0; right:0; bottom:0; z-index:20; height:var(--footer-h);
+    background:rgba(255,255,255,.96); backdrop-filter:blur(6px);
+    border-top:1px solid var(--line-strong);
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 34px;
+    gap:14px;
+  }
+  .statusbar .contact{
+    font-family:var(--mono); font-size:14px; color:var(--muted);
+    display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center;
+  }
+  .statusbar .contact b{ color:var(--ink); font-weight:600; }
+  .statusbar .contact .sep{ color:var(--faint); }
+  .statusbar .contact a{ text-decoration:none; border-bottom:1px solid var(--faint); }
+  .statusbar .contact a:hover{ border-color:var(--accent); color:var(--accent); }
+
+  .statusbar .controls{
+    display:flex; align-items:center; justify-content:space-between; gap:18px;
+  }
+  .nav-dots{ display:flex; gap:12px; }
+  .nav-dots button{
+    width:13px; height:13px; border-radius:50%;
+    border:1.6px solid var(--ink); background:transparent;
+    cursor:pointer; padding:0;
+    transition:background .2s ease, width .2s ease, height .2s ease, border-color .2s ease;
+  }
+  .nav-dots button.active{ background:var(--accent); border-color:var(--accent); width:16px; height:16px; }
+  .nav-dots button:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  .nav-arrows{ display:flex; gap:12px; }
+  .nav-arrows button{
+    font-family:var(--mono); font-size:14px; color:var(--ink);
+    background:none; border:1.4px solid var(--line); padding:9px 18px; cursor:pointer;
+  }
+  .nav-arrows button:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
+  .nav-arrows button:disabled{ opacity:.3; cursor:default; }
 
   @media (max-width:760px){
-    header{ padding:16px 24px; flex-direction:column; align-items:flex-start; gap:12px; }
-    header nav ul{ gap:14px; }
-    main{ padding:0 24px; }
-    .hero{ flex-direction:column; align-items:flex-start; padding:56px 0 40px; }
-    .hero h1{ font-size:38px; }
-    section{ flex-direction:column; gap:16px; padding:40px 0; }
-    section .label{ flex:none; }
+    :root{ --footer-h:150px; --header-h:60px; }
+    header{ padding:0 20px; }
+    .slide{ padding:0 22px; }
+    .hero-top h1{ font-size:40px; }
+    .field{ flex-direction:column; gap:16px; }
+    .field .label{ flex:none; }
     .skillgrid{ grid-template-columns:1fr; }
-    .project-row{ flex-direction:column; }
+    .project-row{ grid-template-columns:1fr; gap:14px; }
+    .project-image{ width:100%; height:150px; }
     .project-row .links{ text-align:left; }
+    .cross-tl, .cross-tr, .cross-bl, .cross-br{ display:none; }
+    footer.statusbar{ padding:12px 20px; }
+    .statusbar .contact{ font-size:11.5px; }
+    .controls{ flex-wrap:wrap; }
   }
 </style>
 </head>
 <body>
 
+
+
+
+
+
 <header>
-  <div class="mark">Portafolio — Perfil profesional</div>
-  <nav>
-    <ul>
-      <li><a href="#presentacion">Presentación</a></li>
-      <li><a href="#formacion">Formación</a></li>
-      <li><a href="#experiencia">Experiencia</a></li>
-      <li><a href="#habilidades">Habilidades</a></li>
-      <li><a href="#cursos">Cursos</a></li>
-      <li><a href="#proyectos">Proyectos</a></li>
-      <li><a href="#netlife">Netlife</a></li>
-      <li><a href="#aporte">Aporte</a></li>
-    </ul>
-  </nav>
+  <div class="mark">Portafolio<span> / Tecnología de la Información</span></div>
+  <div class="count"><span id="current-num">01</span> <span style="color:var(--faint)">/</span> <span id="total-num">08</span></div>
 </header>
 
-<main>
+<div class="deck" id="deck">
 
-  <section id="presentacion" class="hero" style="border-bottom:1px solid var(--line);">
-    <div>
-      <h1>Garcia Ponce Kevin</h1>
-      <p class="role">TECNOLOGÍA DE LA INFORMACIÓN</p>
-    </div>
-    <div class="facts">
-      <div><b>Ubicación</b> — Guayaquil, Ecuador</div>
-      <div><b>Contacto</b> — 0978878130</div>
-      <div><b>Perfil</b> — linkedin.com/in/kevin-garcia-ponce-87647a326</div>
-    </div>
-  </section>
-
-  <section id="presentacion-texto">
-    <div class="label"><h2>Presentación</h2></div>
-    <div class="content">
+  <section class="slide active" id="slide-presentacion" data-title="Perfil técnico">
+    <div class="slide-inner">
+      <div class="idx-dot" aria-hidden="true">01</div>
+      <div class="hero-top">
+        <div>
+          <h1>Garcia Ponce Kevin</h1>
+          <p class="role">ESTUDIANTE DE TI  REDES & INFRAESTRUCTURA</p>
+        </div>
+      </div>
       <p class="statement">
-        Estudiante de Ingeniería en Tecnologías de la Información, con interés en redes, infraestructura
-        tecnológica, seguridad informática, virtualización y tecnologías de datacenter. Con conocimientos
-        en soporte de TI, administración de sistemas y fundamentos de redes. Orientado al aprendizaje
-        continuo, la resolución de problemas y el desarrollo de habilidades en entornos tecnológicos en
-        constante evolución.
+        Estudiante de Tecnología de la Información con orientación hacia redes, infraestructura y sistemas.
+        He complementado mi formación académica con prácticas, laboratorios y proyectos propios en Cisco,
+        Fortinet, VPN/IPSec, virtualización, Windows Server y administración de servicios. Busco una oportunidad
+        para continuar desarrollando estas capacidades en un entorno real de TI.
       </p>
     </div>
   </section>
 
-  <section id="formacion">
-    <div class="label"><h2>Formación</h2></div>
-    <div class="content">
-      <div class="item">
-        <strong>Universidad de Guayaquil</strong>
-        <div class="when">Cursando la Carrera de Tecnología de la Información · 2022 - Presente</div>
-      </div>
-      <div class="item">
-        <strong>Unidad Educativa Réplica Vicente Rocafuerte</strong>
-        <div class="when">2019 - 2022</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="experiencia">
-    <div class="label"><h2>Experiencia</h2></div>
-    <div class="content">
-
-      <div class="job">
-        <h3>Soporte Técnico de Escritorio Senior</h3>
-        <div class="company">Sociedad de Beneficencia de Señoras de Guayaquil · Contrato de formación</div>
-        <div class="meta">jul. 2026 - ago. 2026 · 2 meses · Guayaquil, Guayas, Ecuador · Presencial</div>
-        <p>Realicé mantenimiento y actualización de la página web institucional, así como apoyo en el
-        mantenimiento y revisión de equipos de red y recursos tecnológicos del área de sistemas.</p>
-      </div>
-
-      <div class="job">
-        <h3>Auxiliar electricista</h3>
-        <div class="company">DIPRELAUT S.A. · Contrato de formación</div>
-        <div class="meta">abr. 2026 - jun. 2026 · 3 meses · Guayaquil, Guayas, Ecuador · Presencial</div>
-        <p>Realicé prácticas en DIPRELAUT S.A., brindando soporte técnico y trabajando con Node-RED e
-        InfluxDB para el monitoreo y gestión de datos provenientes de medidores eléctricos conectados
-        mediante redes móviles.</p>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="habilidades">
-    <div class="label"><h2>Habilidades</h2></div>
-    <div class="content">
-      <div class="skillgrid">
-        <div>
-          <h3>Técnicas</h3>
-          <ul>
-            <li>Diagnóstico y resolución de incidencias de red (Cisco, Fortinet)</li>
-            <li>Fundamentos de infraestructura: Windows Server, Active Directory, VMware</li>
-            <li>Desarrollo web básico (HTML, PHP, Google Apps Script)</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Blandas</h3>
-          <ul>
-            <li>Comunicación clara y empática con el usuario</li>
-            <li>Paciencia y manejo de situaciones bajo presión</li>
-            <li>Resolución de problemas</li>
-            <li>Trabajo en equipo</li>
-          </ul>
+  <section class="slide" id="slide-areas" data-title="Áreas técnicas">
+    <div class="slide-inner">
+      <div class="field">
+        <div class="label"><span class="idx-dot">02</span><h2>Áreas técnicas</h2></div>
+        <div class="content">
+          <div class="skillgrid">
+            <div>
+              <h3>REDES & CONECTIVIDAD</h3>
+              <ul>
+                <li>Cisco y Fortinet</li>
+                <li>Routing & Switching</li>
+                <li>VLAN, STP, DHCP y direccionamiento IP</li>
+                <li>VPN/IPSec y fundamentos de SD-WAN</li>
+                <li>Infraestructura de núcleo, distribución y acceso</li>
+              </ul>
+            </div>
+            <div>
+              <h3>SISTEMAS & INFRAESTRUCTURA</h3>
+              <ul>
+                <li>Windows Server y Active Directory</li>
+                <li>DNS, dominio y subdominio</li>
+                <li>Virtualización con VMware</li>
+                <li>Node-RED e InfluxDB</li>
+                <li>Soporte, diagnóstico y documentación técnica</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="cursos">
-    <div class="label"><h2>Cursos</h2></div>
-    <div class="content">
-      <div class="item">
-        <strong>Soporte y Seguridad de Red</strong>
-        <div class="when">Cisco Networking Academy · Expedición: sept. 2026</div>
-      </div>
-      <div class="item">
-        <strong>Direccionamiento de red y solución de problemas básicos</strong>
-        <div class="when">Cisco Networking Academy</div>
+  <section class="slide" id="slide-proyectos" data-title="Proyectos destacados">
+    <div class="slide-inner">
+      <div class="field">
+        <div class="label"><span class="idx-dot">03</span><h2>Proyectos destacados</h2></div>
+        <div class="content">
+          <div class="project-row">
+            <div class="project-image">
+              <img src="IMAGEN_TIER_III" alt="Vista previa del proyecto TIER-III"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+              <div class="image-placeholder" style="display:none;">IMAGEN DEL PROYECTO<br>REEMPLAZAR URL</div>
+            </div>
+            <div>
+              <h3>TIER-III — Cisco & Fortinet</h3>
+              <p>Laboratorio de práctica y documentación orientado al diagnóstico y troubleshooting de
+              infraestructura de red. Trabajé escenarios de routing, VPN/IPSec y resolución de incidencias
+              con una arquitectura de núcleo, distribución y acceso.</p>
+              <div class="project-tech">CISCO  FORTINET  ROUTING  VPN/IPSEC  TROUBLESHOOTING</div>
+            </div>
+            <div class="links">
+              <a href="https://github.com/stecrak/TIER-III">repositorio →</a>
+              <a href="https://drive.google.com/file/d/1KmL7KBZGRNSKaUP3XCMB8O8MC18JABqg/view">documentación →</a>
+            </div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-image">
+              <img src="IMAGEN_ACTIVE_DIRECTORY" alt="Vista previa del laboratorio de Active Directory"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+              <div class="image-placeholder" style="display:none;">IMAGEN DEL PROYECTO<br>REEMPLAZAR URL</div>
+            </div>
+            <div>
+              <h3>Laboratorio Windows — Active Directory</h3>
+              <p>Laboratorio práctico de infraestructura Windows orientado a la administración de servicios
+              de directorio. Actualmente desarrollo la implementación y configuración de un entorno con
+              dominio y subdominio, reforzando conocimientos de administración de sistemas.</p>
+              <div class="project-tech">WINDOWS SERVER  ACTIVE DIRECTORY  DNS  DOMINIO  SUBDOMINIO</div>
+            </div>
+            <div class="links"><span style="color:var(--muted);">en desarrollo →</span></div>
+          </div>
+
+          <div class="project-row">
+            <div class="project-image">
+              <img src="IMAGEN_GESTION_DOCUMENTAL" alt="Vista previa del Sistema de Gestión Documental"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+              <div class="image-placeholder" style="display:none;">IMAGEN DEL PROYECTO<br>REEMPLAZAR URL</div>
+            </div>
+            <div>
+              <h3>Sistema de Gestión Documental</h3>
+              <p>Aplicación web desarrollada para organizar, gestionar y facilitar el acceso a documentación.
+              Integra XAMPP y Google Apps Script para apoyar el almacenamiento y control de información.</p>
+              <div class="project-tech">XAMPP  GOOGLE APPS SCRIPT  PHP  HTML</div>
+            </div>
+            <div class="links">
+              <a href="https://github.com/stecrak/Sistema-de-Gesti-n-Documental">repositorio →</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="proyectos">
-    <div class="label"><h2>Proyectos</h2></div>
-    <div class="content">
-
-      <div class="project-row">
-        <div>
-          <h3>TIER-III — Comandos y gestión en equipos Cisco y Fortinet</h3>
-          <p>Documentación y práctica de comandos para diagnóstico y resolución de incidencias de
-          nivel III en equipos Cisco y Fortinet. Muestra troubleshooting técnico avanzado y comprensión
-          de infraestructura de red.</p>
+  <section class="slide" id="slide-competencias" data-title="Competencias">
+    <div class="slide-inner">
+      <div class="field">
+        <div class="label"><span class="idx-dot">04</span><h2>Competencias</h2></div>
+        <div class="content">
+          <div class="skillgrid">
+            <div>
+              <h3>CAPACIDAD TÉCNICA</h3>
+              <ul>
+                <li>Diagnóstico y resolución de problemas de conectividad</li>
+                <li>Lectura y análisis de configuraciones de red</li>
+                <li>Práctica con laboratorios virtualizados</li>
+                <li>Documentación de procedimientos y soluciones</li>
+              </ul>
+            </div>
+            <div>
+              <h3>FORMA DE TRABAJO</h3>
+              <ul>
+                <li>Aprendizaje autónomo y adaptación a nuevas tecnologías</li>
+                <li>Comunicación clara con usuarios y equipos</li>
+                <li>Organización y seguimiento de tareas</li>
+                <li>Trabajo colaborativo y orientación a resultados</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="links"><a href="https://github.com/stecrak/TIER-III">Repositorio →</a></div>
       </div>
-
-      <div class="project-row">
-        <div>
-          <h3>Sistema de Gestión Documental</h3>
-          <p>Aplicación web para la gestión y control de documentos, desarrollada con XAMPP y Google
-          Apps Script. Almacenamiento y acceso eficiente a la información.</p>
-        </div>
-        <div class="links">
-          <a href="https://github.com/stecrak/Sistema-de-Gesti-n-Documental">Repositorio →</a>
-          <a href="https://github.com/stecrak/sistemagesto.github.io">Demo en vivo →</a>
-        </div>
-      </div>
-
-      <div class="project-row">
-        <div>
-          <h3>Otros proyectos</h3>
-          <p>Proyectos adicionales de desarrollo web (PHP, HTML) enfocados en distintas necesidades
-          funcionales, disponibles en mi perfil de GitHub.</p>
-        </div>
-        <div class="links"><a href="https://github.com/stecrak">Perfil de GitHub →</a></div>
-      </div>
-
     </div>
   </section>
 
-  <section id="netlife">
-    <div class="label"><h2>Por qué Netlife</h2></div>
-    <div class="content">
-      <p class="statement">
-        Me interesa realizar mi pasantía en Netlife porque trabaja con tecnologías de
-        conectividad como FTTH y enlaces de datos, áreas que me interesan especialmente
-        dentro de mi formación en Tecnologías de la Información. Cuento con
-        conocimientos en soporte técnico, mantenimiento de equipos y redes que quiero
-        poner en práctica en un entorno real, aprendiendo de profesionales con más
-        experiencia mientras aporto lo que ya sé al área de soporte.
-      </p>
+  <section class="slide" id="slide-experiencia" data-title="Experiencia práctica">
+    <div class="slide-inner">
+      <div class="field">
+        <div class="label"><span class="idx-dot">05</span><h2>Experiencia práctica</h2></div>
+        <div class="content">
+          <div class="job">
+            <h3>Soporte técnico y mantenimiento de sistemas</h3>
+            <div class="company">Sociedad de Beneficencia de Señoras de Guayaquil  Formación práctica</div>
+            <div class="meta">jul. 2026 - ago. 2026  Guayaquil, Ecuador  Presencial</div>
+            <p>Apoyé al área de sistemas en mantenimiento y actualización de la página web institucional,
+            gestión de información y documentación, y revisión de equipos y recursos tecnológicos.
+            También participé en actividades relacionadas con mantenimiento de equipos de red.</p>
+          </div>
+          <div class="job">
+            <h3>Soporte técnico y monitoreo</h3>
+            <div class="company">DIPRELAUT S.A.  Formación práctica</div>
+            <div class="meta">abr. 2026 - jun. 2026  Guayaquil, Ecuador  Presencial</div>
+            <p>Brindé apoyo en soporte técnico y monitoreo de datos, utilizando Node-RED e InfluxDB para
+            visualizar y gestionar información proveniente de medidores eléctricos conectados mediante
+            redes móviles.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section id="aporte">
-    <div class="label"><h2>Mi aporte</h2></div>
-    <div class="content">
-      <p class="statement">
-        Puedo aportar una base sólida en resolución de incidencias técnicas y atención al usuario, desarrollada
-        tanto en mi formación como en mis prácticas profesionales previas. Mi experiencia trabajando 
-        con equipos Cisco y Fortinet me permite entender rápido dónde puede estar el origen de
-        un problema de conectividad, y mi paso por soporte técnico me enseñó a 
-        explicar soluciones de forma clara a personas sin conocimientos técnicos. 
-        Me adapto con facilidad a nuevas herramientas y estoy acostumbrado a aprender sobre la marcha en entornos de trabajo reales.
-      </p>
+  <section class="slide" id="slide-formacion" data-title="Formación">
+    <div class="slide-inner">
+      <div class="field">
+        <div class="label"><span class="idx-dot">06</span><h2>Formación</h2></div>
+        <div class="content">
+          <div class="item">
+            <strong>Universidad de Guayaquil</strong>
+            <div class="when">Tecnología de la Información · 2022 - Presente</div>
+            <div class="when">Formación orientada a redes, infraestructura, sistemas y tecnologías de la información.</div>
+          </div>
+
+          <div class="item">
+            <strong>Formación complementaria</strong>
+            <div class="when">
+              <a href="https://www.netacad.com/recognitions/verify/8344c927-3bbb-42a5-9c63-e786f67eab49" target="_blank" rel="noopener noreferrer">Soporte y Seguridad de red</a>
+            </div>
+            <div class="when">
+              <a href="https://www.netacad.com/recognitions/verify/c6c19457-2535-4499-8896-d998b91940b1" target="_blank" rel="noopener noreferrer">Direccionamiento de red y solución de problemas básicos</a>
+            </div>
+            <div class="when">
+              <a href="https://www.udemy.com/certificate/UC-cc9137c8-5f9f-48c6-bcf5-0878c067d470/" target="_blank" rel="noopener noreferrer">MS SQL Server 2019. Programación de Bases de Datos con T-SQL</a>
+            </div>
+            <div class="when">
+              <a href="https://www.udemy.com/certificate/UC-e7543fe5-5fb7-476f-8c93-f9bfa9e8ecfd/" target="_blank" rel="noopener noreferrer">Check Point Firewall</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-</main>
+<section class="slide" id="slide-objetivo" data-title="Objetivo profesional">
+    <div class="slide-inner">
+      <div class="field">
+        <div class="label"><span class="idx-dot">07</span><h2>Objetivo profesional</h2></div>
+        <div class="content">
+          <p class="statement">
+            Busco desarrollarme en un área de Tecnología de la Información donde pueda aplicar y ampliar
+            mis conocimientos en redes, infraestructura y sistemas. Tengo especial interés en conectividad,
+            FTTH, enlaces de datos, seguridad e infraestructura de datacenter, y quiero convertir la práctica
+            de mis laboratorios y proyectos en experiencia profesional, aprendiendo de equipos técnicos y
+            participando en retos reales.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<footer>
-  Garcia Ponce Kevin · kevingarciaponce6@gmail.com · +593 97 887 8130 ·
-  <a href="https://github.com/stecrak">github.com/stecrak</a> ·
-  <a href="https://www.linkedin.com/in/kevin-garcia-ponce-87647a326">linkedin.com/in/kevin-garcia-ponce-87647a326</a>
+  <section class="slide" id="slide-propuesta" data-title="Propuesta de valor">
+    <div class="slide-inner">
+      <div class="field">
+        <div class="label"><span class="idx-dot">08</span><h2>Propuesta de valor</h2></div>
+        <div class="content">
+          <p class="statement">
+            Mi perfil combina formación académica, experiencia práctica y proyectos técnicos propios.
+            Puedo aportar una base en redes y troubleshooting con Cisco y Fortinet, conocimientos en
+            Windows Server, Active Directory y VMware, y experiencia utilizando herramientas como Node-RED
+            e InfluxDB. Me caracteriza la disposición para aprender, investigar una solución y documentar
+            lo realizado, con el objetivo de convertir nuevos conocimientos en resultados prácticos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="statusbar">
+  <div class="contact">
+    <b>Garcia Ponce Kevin</b>
+     
+     
+     <a href="https://github.com/stecrak">github.com/stecrak</a>
+     <a href="https://www.linkedin.com/in/kevin-garcia-ponce-87647a326">linkedin.com/in/kevin-garcia-ponce-87647a326</a>
+  </div>
+  <div class="controls">
+    <nav class="nav-dots" id="nav-dots" aria-label="Ir a diapositiva"></nav>
+    <div class="nav-arrows">
+      <button id="prev-btn" aria-label="Diapositiva anterior">← anterior</button>
+      <button id="next-btn" aria-label="Siguiente diapositiva">siguiente →</button>
+    </div>
+  </div>
 </footer>
 
 <script>
-  var sections = document.querySelectorAll('main section:not(.hero)');
-  var observer = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting) entry.target.classList.add('in-view');
-    });
-  }, { threshold: 0.12 });
-  sections.forEach(function(s){ observer.observe(s); });
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dotsContainer = document.getElementById('nav-dots');
+  var currentNumEl = document.getElementById('current-num');
+  var totalNumEl = document.getElementById('total-num');
+  var prevBtn = document.getElementById('prev-btn');
+  var nextBtn = document.getElementById('next-btn');
+  var current = 0;
 
-  var hero = document.querySelector('.hero');
-  if (hero) {
-    hero.classList.add('js-anim');
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        hero.classList.add('in-view');
-      });
-    });
+  function pad(n){ return String(n).padStart(2, '0'); }
+  totalNumEl.textContent = pad(slides.length);
+
+  slides.forEach(function(slide, i){
+    var dot = document.createElement('button');
+    dot.setAttribute('aria-label', 'Ir a: ' + slide.dataset.title);
+    dot.addEventListener('click', function(){ goTo(i); });
+    dotsContainer.appendChild(dot);
+  });
+  var dots = Array.prototype.slice.call(dotsContainer.children);
+
+  function goTo(index){
+    if (index < 0 || index >= slides.length) return;
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    dots[current].classList.add('active');
+    currentNumEl.textContent = pad(current + 1);
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
   }
+
+  prevBtn.addEventListener('click', function(){ goTo(current - 1); });
+  nextBtn.addEventListener('click', function(){ goTo(current + 1); });
+
+  document.addEventListener('keydown', function(e){
+    if (['ArrowRight','ArrowDown','PageDown',' '].indexOf(e.key) !== -1){
+      e.preventDefault(); goTo(current + 1);
+    } else if (['ArrowLeft','ArrowUp','PageUp'].indexOf(e.key) !== -1){
+      e.preventDefault(); goTo(current - 1);
+    }
+  });
+
+  var touchStartY = null;
+  document.addEventListener('touchstart', function(e){ touchStartY = e.touches[0].clientY; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (touchStartY === null) return;
+    var diff = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(diff) > 60){ diff > 0 ? goTo(current + 1) : goTo(current - 1); }
+    touchStartY = null;
+  }, {passive:true});
+
+  goTo(0);
 </script>
+
+<!--
+  IMÁGENES DE PROYECTOS:
+  Reemplaza estas cuatro URLs por la imagen correspondiente a cada proyecto:
+  IMAGEN_TIER_III
+  IMAGEN_GESTION_DOCUMENTAL
+  IMAGEN_ACTIVE_DIRECTORY
+  IMAGEN_OTROS_PROYECTOS
+
+  Puedes usar una URL pública de imagen (por ejemplo, GitHub, Imgur o tu propio hosting).
+-->
 
 </body>
 </html>
