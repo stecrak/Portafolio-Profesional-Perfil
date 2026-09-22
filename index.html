@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Portafolio — Perfil profesional</title>
 <style>
   :root{
@@ -41,7 +41,6 @@
 
   .mono{ font-family:var(--mono); }
 
-  /* ============= corner crosshairs (fixed, decorative frame) ============= */
   .crosshair{ position:fixed; width:18px; height:18px; z-index:25; pointer-events:none; }
   .crosshair::before, .crosshair::after{ content:""; position:absolute; background:var(--ink); }
   .crosshair::before{ width:100%; height:1.5px; top:50%; }
@@ -51,7 +50,6 @@
   .cross-bl{ bottom:calc(var(--footer-h) + 12px); left:12px; }
   .cross-br{ bottom:calc(var(--footer-h) + 12px); right:12px; }
 
-  /* ================= header ================= */
   header{
     position:fixed; top:0; left:0; right:0; z-index:20; height:var(--header-h);
     background:rgba(255,255,255,.94); backdrop-filter:blur(6px);
@@ -64,7 +62,6 @@
   header .count{ font-family:var(--mono); font-size:16px; color:var(--muted); font-variant-numeric:tabular-nums; }
   header .count span#current-num{ color:var(--accent); font-weight:700; }
 
-  /* ================= slide deck ================= */
   .deck{
     position:relative;
     height:100vh; width:100%;
@@ -86,7 +83,6 @@
 
   .slide-inner{ margin:auto; max-width:1040px; width:100%; padding:40px 0; }
 
-  /* --- section index + heading pattern --- */
   .field{ display:flex; gap:44px; flex-wrap:wrap; }
   .field .label{ flex:0 0 220px; display:flex; align-items:center; gap:18px; }
   .field .label h2{ font-size:32px; }
@@ -100,7 +96,6 @@
     display:flex; align-items:center; justify-content:center;
   }
 
-  /* --- hero slide --- */
   .slide#slide-presentacion .slide-inner{ display:flex; flex-direction:column; gap:30px; }
   .slide#slide-presentacion .idx-dot{
     flex:0 0 56px; width:56px; height:56px; font-size:17px;
@@ -138,6 +133,13 @@
   .skillgrid ul{ list-style:none; color:var(--muted); font-size:16.5px; display:flex; flex-direction:column; gap:10px; }
   .skillgrid li::before{ content:"— "; color:var(--accent); font-family:var(--mono); }
 
+  .badge-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+  .badge-row span{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.02em;
+    border:1.4px solid var(--accent); padding:8px 14px; color:var(--accent);
+    background:var(--accent-soft); font-weight:700;
+  }
+
   .project-row{
     padding:24px 0; border-top:1px solid var(--line);
     display:grid; grid-template-columns:190px 1fr auto; align-items:center;
@@ -150,7 +152,8 @@
     display:flex; align-items:center; justify-content:center;
   }
   .project-image img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .image-note{ font-family:var(--mono); font-size:10px; color:var(--faint); margin-top:5px; }\n  .project-image .image-placeholder{
+  .image-note{ font-family:var(--mono); font-size:10px; color:var(--faint); margin-top:5px; }
+  .project-image .image-placeholder{
     font-family:var(--mono); font-size:11px; line-height:1.4;
     color:var(--accent); text-align:center; padding:14px;
   }
@@ -158,7 +161,6 @@
   .project-row p{ color:var(--muted); font-size:16.5px; max-width:600px; }
   .project-row .links{ flex:0 0 auto; font-family:var(--mono); font-size:14.5px; white-space:nowrap; display:flex; flex-direction:column; gap:6px; text-align:right; }
 
-  /* ================= fixed footer / status bar ================= */
   footer.statusbar{
     position:fixed; left:0; right:0; bottom:0; z-index:20; height:var(--footer-h);
     background:rgba(255,255,255,.96); backdrop-filter:blur(6px);
@@ -166,6 +168,7 @@
     display:flex; flex-direction:column; justify-content:center;
     padding:0 34px;
     gap:14px;
+    padding-bottom:calc(env(safe-area-inset-bottom, 0px));
   }
   .statusbar .contact{
     font-family:var(--mono); font-size:14px; color:var(--muted);
@@ -179,7 +182,7 @@
   .statusbar .controls{
     display:flex; align-items:center; justify-content:space-between; gap:18px;
   }
-  .nav-dots{ display:flex; gap:12px; }
+  .nav-dots{ display:flex; gap:12px; flex-wrap:wrap; }
   .nav-dots button{
     width:13px; height:13px; border-radius:50%;
     border:1.6px solid var(--ink); background:transparent;
@@ -217,14 +220,9 @@
 </head>
 <body>
 
-
-
-
-
-
 <header>
   <div class="mark">Portafolio<span> / Tecnología de la Información</span></div>
-  <div class="count"><span id="current-num">01</span> <span style="color:var(--faint)">/</span> <span id="total-num">08</span></div>
+  <div class="count"><span id="current-num">01</span> <span style="color:var(--faint)">/</span> <span id="total-num">09</span></div>
 </header>
 
 <div class="deck" id="deck">
@@ -372,10 +370,48 @@
     </div>
   </section>
 
+  <section class="slide" id="slide-calidad" data-title="Calidad y seguridad de la información">
+    <div class="slide-inner">
+      <div class="field">
+        <div class="label"><span class="idx-dot">05</span><h2>Calidad & seguridad de la información</h2></div>
+        <div class="content">
+          <div class="skillgrid">
+            <div>
+              <h3>SEGURIDAD DE LA INFORMACIÓN</h3>
+              <ul>
+                <li>ISO/IEC 27001:2022 — Sistema de Gestión de Seguridad de la Información</li>
+                <li>ISO/IEC 27002 — controles de seguridad de la información</li>
+                <li>Identificación y análisis de riesgos de seguridad</li>
+                <li>Matrices de riesgo (probabilidad × impacto)</li>
+              </ul>
+            </div>
+            <div>
+              <h3>GESTIÓN DE CALIDAD</h3>
+              <ul>
+                <li>ISO 9001 — Sistema de Gestión de la Calidad</li>
+                <li>Ciclo PHVA (Planificar, Hacer, Verificar, Actuar)</li>
+                <li>Matrices de evaluación de procesos y controles</li>
+                <li>Mejora continua y trazabilidad documental</li>
+              </ul>
+            </div>
+          </div>
+          <div class="badge-row">
+            <span>ISO 27001:2022</span>
+            <span>ISO 27002</span>
+            <span>ISO 9001</span>
+            <span>PHVA</span>
+            <span>MATRIZ DE RIESGO</span>
+            <span>MATRIZ DE EVALUACIÓN</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="slide" id="slide-experiencia" data-title="Experiencia práctica">
     <div class="slide-inner">
       <div class="field">
-        <div class="label"><span class="idx-dot">05</span><h2>Experiencia práctica</h2></div>
+        <div class="label"><span class="idx-dot">06</span><h2>Experiencia práctica</h2></div>
         <div class="content">
           <div class="job">
             <h3>Soporte técnico y mantenimiento de sistemas</h3>
@@ -401,7 +437,7 @@
   <section class="slide" id="slide-formacion" data-title="Formación">
     <div class="slide-inner">
       <div class="field">
-        <div class="label"><span class="idx-dot">06</span><h2>Formación</h2></div>
+        <div class="label"><span class="idx-dot">07</span><h2>Formación</h2></div>
         <div class="content">
           <div class="item">
             <strong>Universidad de Guayaquil</strong>
@@ -432,7 +468,7 @@
 <section class="slide" id="slide-objetivo" data-title="Objetivo profesional">
     <div class="slide-inner">
       <div class="field">
-        <div class="label"><span class="idx-dot">07</span><h2>Objetivo profesional</h2></div>
+        <div class="label"><span class="idx-dot">08</span><h2>Objetivo profesional</h2></div>
         <div class="content">
           <p class="statement">
           Busco desarrollarme en el área de Tecnología de la Información, donde 
@@ -448,13 +484,15 @@
   <section class="slide" id="slide-propuesta" data-title="Propuesta de valor">
     <div class="slide-inner">
       <div class="field">
-        <div class="label"><span class="idx-dot">08</span><h2>Propuesta de valor</h2></div>
+        <div class="label"><span class="idx-dot">09</span><h2>Propuesta de valor</h2></div>
         <div class="content">
           <p class="statement">
           Mi perfil combina formación académica, experiencia práctica y proyectos técnicos propios.
           Cuento con formación en redes, troubleshooting, Windows Server, 
           Active Directory, Proxmox VE y VMware, además de experiencia con 
-          Cisco, Fortinet, Node-RED e InfluxDB. Me considero una persona responsable,
+          Cisco, Fortinet, Node-RED e InfluxDB, y conocimientos en gestión de calidad y
+          seguridad de la información (ISO 9001, ISO 27001:2022, ISO 27002, PHVA y matrices
+          de riesgo y evaluación). Me considero una persona responsable,
           con facilidad para aprender, comunicarme y trabajar en equipo. Me gusta investigar, 
           documentar lo que hago, escuchar diferentes ideas y explicar temas técnicos de forma
           sencilla para encontrar soluciones prácticas junto a los demás.
